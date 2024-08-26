@@ -1,4 +1,6 @@
 pandas
 matplotlib
 numpy
-jupyter
+jupyterlab
+ipdb
+requests
