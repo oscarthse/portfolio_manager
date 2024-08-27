@@ -2,7 +2,6 @@ from supporting_functions import *
 
 def create_x_y(df_data, df_technical, df_macroeconomic):
     df_macroeconomic = rename_macroeconomic(df_macroeconomic)
-    df_macroeconomic = df_macroeconomic.drop(columns = "int64_field_0")
     df_technical = rename_technical(df_technical)
     df_data = rename_columns(df_data)
     df_technical = clean_data(df_technical)
@@ -16,5 +15,5 @@ def create_x_y(df_data, df_technical, df_macroeconomic):
     df_time = convert_time_sin_cos(df_final)
     X = df_time.drop(columns = "Target")
     y = df_time[["Target"]]
-    log_df = log_divide_next(df_data["close"]).dropna()
+    log_df = log_divide_next(df_data).dropna()
     return X, y, log_df

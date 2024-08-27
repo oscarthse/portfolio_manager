@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 def rename_macroeconomic(df_macroeconomic):
+    df_macroeconomic = df_macroeconomic.drop(columns = "int64_field_0")
     columns_macroeconomic = ["datetime", "interest_rate", "GDP", "inflation"]
     df_macroeconomic.columns = columns_macroeconomic
     return df_macroeconomic
@@ -16,7 +17,7 @@ def rename_columns(df):
     return df
 
 def rename_technical(df_technical):
-    df_technical = df_technical.rename(columns = {"Unnamed: 0": "datetime"})
+    df_technical = df_technical.rename(columns = {"timestamp_field_0": "datetime"})
     return df_technical
 
 def convert_datetime(df):
