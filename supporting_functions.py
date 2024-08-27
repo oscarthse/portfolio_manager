@@ -62,7 +62,5 @@ def convert_time_sin_cos(df):
     return df_converted
 
 def log_divide_next(df):
-    next_values = df.shift(-1)
-    ratio = df / next_values
-    log_ratio = np.log(ratio)
-    return log_ratio
+    log_returns = np.log(df['close'] / df['close'].shift(1))
+    return log_returns
