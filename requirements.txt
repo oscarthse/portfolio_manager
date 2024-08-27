@@ -3,6 +3,8 @@ matplotlib
 numpy
 ipdb
 requests
+db_dtypes
+google-cloud-bigquery
 fastapi
 uvicorn
 jupyter-contrib-core==0.4.0
