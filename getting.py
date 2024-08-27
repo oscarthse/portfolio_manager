@@ -2,9 +2,6 @@ import os
 from google.cloud import bigquery
 import pandas as pd
 
-client = bigquery.Client(project="portfolio-manager-433711")
-
-
 def get_price_data_raw(ticker):
     client = bigquery.Client(project="portfolio-manager-433711")
     table_ref = f"portfolio-manager-433711.raw.{ticker}_raw"
@@ -31,7 +28,7 @@ def get_technical_analysis(ticker):
 
 def get_macro_data():
     client = bigquery.Client(project="portfolio-manager-433711")
-    table_ref = "portfolio-manager-433711.macro.macro_data"
+    table_ref = "portfolio-manager-433711.macro.macro"
     query = f"""
     SELECT *
     FROM {table_ref}
