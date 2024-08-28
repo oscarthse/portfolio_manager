@@ -8,6 +8,7 @@ google-cloud-bigquery
 fastapi
 uvicorn
 sklearn
+tensorflow
 jupyter-contrib-core==0.4.0
 jupyter-contrib-nbextensions==0.5.1
 jupyter-highlight-selected-word==0.2.0
@@ -20,4 +21,3 @@ jupyterlab==3.4.8
 jupyterlab-pygments==0.2.2
 jupyterlab-widgets==1.1.1
 jupyterlab_server==2.16.1
-
