@@ -7,7 +7,8 @@ db_dtypes
 google-cloud-bigquery
 fastapi
 uvicorn
-sklearn
+scikit-learn
+tensorflow
 jupyter-contrib-core==0.4.0
 jupyter-contrib-nbextensions==0.5.1
 jupyter-highlight-selected-word==0.2.0

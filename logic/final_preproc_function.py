@@ -1,4 +1,4 @@
-from supporting_functions import *
+from logic.supporting_functions import *
 
 def create_x_y(df_data, df_technical, df_macroeconomic):
     df_macroeconomic = rename_macroeconomic(df_macroeconomic)
