@@ -1,0 +1,10 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/portfolio-manager-433711/portfolio-manager-app:latest', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/portfolio-manager-433711/portfolio-manager-app:latest']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: ['run', 'deploy', 'portfolio-manager-app', '--image', 'gcr.io/portfolio-manager-433711/portfolio-manager-app:latest', '--region', 'europe-west1', '--platform', 'managed']
+
+timeout: '600s'
