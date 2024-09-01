@@ -36,13 +36,18 @@ def clean_data(df):
 
 def create_target(df, column_name, new_column_name='Target'):
     result = []
-    for i in range(len(df) - 1):
-        if df[column_name].iloc[i] > df[column_name].iloc[i-1]:
+
+    for i in range(1, len(df)):
+        change_percent = (df[column_name].iloc[i] / df[column_name].iloc[i-1] - 1) * 100
+        if change_percent > 0.07:
             result.append(1)
+        elif change_percent < -0.07:
+            result.append(-1)
         else:
             result.append(0)
-    result.append(float('nan'))
+    result = [float('nan')] + result
     df[new_column_name] = pd.Series(result, index=df.index)
+
     return df
 
 def target_drop(df_final):
@@ -59,9 +64,17 @@ def convert_time_sin_cos(df):
     data['sin_time_of_day'] = np.sin(2 * np.pi * data['time_of_day_norm'])
     data["cos_day_of_year"] = np.cos(2 * np.pi * data['day_of_year_norm'])
     data["sin_day_of_year"] = np.sin(2 * np.pi * data['day_of_year_norm'])
-    df_converted = data.drop(columns = ["day_of_year", "time_of_day", "day_of_year_norm", "time_of_day_norm", "datetime"])
+    df_converted = data.drop(columns = ["day_of_year", "time_of_day", "day_of_year_norm", "time_of_day_norm"])
     return df_converted
 
 def log_divide_next(df):
     log_returns = np.log(df['close'] / df['close'].shift(1))
     return log_returns
+
+def split_into_categories(df, column_name, prefix='Category'):
+
+    df[f'{prefix}_1'] = (df[column_name] == 1).astype(int)
+    df[f'{prefix}_0'] = (df[column_name] == 0).astype(int)
+    df[f'{prefix}_-1'] = (df[column_name] == -1).astype(int)
+
+    return df
