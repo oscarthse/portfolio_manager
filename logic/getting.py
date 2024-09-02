@@ -82,3 +82,16 @@ def get_technical_analysis_test(ticker):
     df = df.sort_values(by='timestamp_field_0')
 
     return df
+
+def get_macro_data_test():
+    client = bigquery.Client(project="portfolio-manager-433711")
+    table_ref = "portfolio-manager-433711.macro_test.macro_test"
+    query = f"""
+    SELECT *
+    FROM {table_ref}
+    """
+
+    df = client.query(query).to_dataframe()
+    df = df.sort_values(by='timestamp')
+
+    return df
