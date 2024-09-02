@@ -56,3 +56,29 @@ def get_neural_nets(ticker):
         # Load the model from the tempora file
         model = tf.keras.models.load_model(temp_model_file.name)
     return model
+
+def get_price_data_test_raw(ticker):
+    client = bigquery.Client(project="portfolio-manager-433711")
+    table_ref = f"portfolio-manager-433711.raw_test.{ticker}_raw_price_data"
+    query = f"""
+    SELECT *
+    FROM {table_ref}
+    """
+
+    df = client.query(query).to_dataframe()
+    df = df.sort_values(by='datetime')
+
+    return df
+
+def get_technical_analysis_test(ticker):
+    client = bigquery.Client(project="portfolio-manager-433711")
+    table_ref = f"portfolio-manager-433711.technical_analysis_test.{ticker}_test_data_technical_analysis"
+    query = f"""
+    SELECT *
+    FROM {table_ref}
+    """
+
+    df = client.query(query).to_dataframe()
+    df = df.sort_values(by='timestamp_field_0')
+
+    return df
