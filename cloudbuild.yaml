@@ -10,4 +10,8 @@ steps:
          '--region', 'europe-west1',
          '--platform', 'managed']
 
+options:
+  logging: CLOUD_LOGGING_ONLY  # This configures logging to use Cloud Logging only
+  # Alternatively, specify logs_bucket or default_logs_bucket_behavior if needed
+
 timeout: '600s'
