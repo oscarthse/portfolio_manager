@@ -6,12 +6,10 @@ requests
 db_dtypes
 google-cloud-bigquery
 google-cloud-storage
-fastapi
-uvicorn
+fastapi==0.75.0
+uvicorn==0.18.3
 scikit-learn
 tensorflow
-io
-tempfile
 jupyter-contrib-core==0.4.0
 jupyter-contrib-nbextensions==0.5.1
 jupyter-highlight-selected-word==0.2.0
