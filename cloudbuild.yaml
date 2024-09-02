@@ -1,0 +1,17 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'europe-west1-docker.pkg.dev/portfolio-manager-433711/portfolio-manager-repo/portfolio-manager-app', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'europe-west1-docker.pkg.dev/portfolio-manager-433711/portfolio-manager-repo/portfolio-manager-app']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  args: ['run', 'deploy', 'portfolio-manager-app',
+         '--image', 'europe-west1-docker.pkg.dev/portfolio-manager-433711/portfolio-manager-repo/portfolio-manager-app',
+         '--region', 'europe-west1',
+         '--platform', 'managed']
+
+options:
+  logging: CLOUD_LOGGING_ONLY  # This configures logging to use Cloud Logging only
+  # Alternatively, specify logs_bucket or default_logs_bucket_behavior if needed
+
+timeout: '600s'
