@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from getting import get_price_data_raw
+from supporting_functions import rename_columns
 
 def var(simulations, confidence_interval: int):
     '''
@@ -66,3 +68,83 @@ def max_drawdown(simulations):
         float: The worst loss simulated by GBM as a percentage
     '''
     return np.min(simulations[-1] / np.maximum.accumulate(simulations[-1]) - 1)*100
+
+
+def ups_and_downs():
+
+    '''
+    Returns a dictionary containing the average percentage increase above/below
+    the thresholds for the models for each stock.
+    '''
+
+    stocks = ['AAPL', 'AMT', 'MSFT', 'CAT', 'GS', 'JNJ', 'MCD', 'NEE', 'PG', 'XOM']
+    stocks_df = [0 for i in range(len(stocks))]
+
+    for i in range(len(stocks)):
+        stock = get_price_data_raw(stocks[i])
+        rename_columns(stock)
+        stock = stock.sort_values(by='datetime')
+        stocks_df[i] = stock
+
+    percentages = [0 for i in range(len(stocks_df))]
+
+    for i in range(len(stocks_df)):
+        stocks_df[i]['percentage_increase'] = (stocks_df[i]['close'] / stocks_df[i]['close'].shift(1) - 1) * 100
+        percentages[i] = np.array(stocks_df[i]['percentage_increase'].dropna())
+        percentages[i].sort()
+
+    aapl_high = np.array([per for per in percentages[0] if per > 0.07]).mean()
+    aapl_low = np.array([per for per in percentages[0] if per < -0.07]).mean()
+
+    amt_high = np.array([per for per in percentages[1] if per > 0.07]).mean()
+    amt_low = np.array([per for per in percentages[1] if per < -0.07]).mean()
+
+    msft_high = np.array([per for per in percentages[2] if per > 0.07]).mean()
+    msft_low = np.array([per for per in percentages[2] if per < -0.07]).mean()
+
+    cat_high = np.array([per for per in percentages[3] if per > 0.07]).mean()
+    cat_low = np.array([per for per in percentages[3] if per < -0.07]).mean()
+
+    gs_high = np.array([per for per in percentages[4] if per > 0.07]).mean()
+    gs_low = np.array([per for per in percentages[4] if per < -0.07]).mean()
+
+    jnj_high = np.array([per for per in percentages[5] if per > 0.07]).mean()
+    jnj_low = np.array([per for per in percentages[5] if per < -0.07]).mean()
+
+    mcd_high = np.array([per for per in percentages[6] if per > 0.07]).mean()
+    mcd_low = np.array([per for per in percentages[6] if per < -0.07]).mean()
+
+    nee_high = np.array([per for per in percentages[7] if per > 0.07]).mean()
+    nee_low = np.array([per for per in percentages[7] if per < -0.07]).mean()
+
+    pg_high = np.array([per for per in percentages[8] if per > 0.07]).mean()
+    pg_low = np.array([per for per in percentages[8] if per < -0.07]).mean()
+
+    xom_high = np.array([per for per in percentages[9] if per > 0.07]).mean()
+    xom_low = np.array([per for per in percentages[9] if per < -0.07]).mean()
+
+    returns = {}
+    returns['AAPL'] = {'up': aapl_high, 'down': aapl_low}
+    returns['AMT'] = {'up': amt_high, 'down': amt_low}
+    returns['MSFT'] = {'up': msft_high, 'down': msft_low}
+    returns['CAT'] = {'up': cat_high, 'down': cat_low}
+    returns['GS'] = {'up': gs_high, 'down': gs_low}
+    returns['JNJ'] = {'up': jnj_high, 'down': jnj_low}
+    returns['MCD'] = {'up': mcd_high, 'down': mcd_low}
+    returns['NEE'] = {'up': nee_high, 'down': nee_low}
+    returns['PG'] = {'up': pg_high, 'down': pg_low}
+    returns['XOM'] = {'up': xom_high, 'down': xom_low}
+
+    return returns
+
+
+def expected_return(model, X_pred, ticker: str):
+    '''
+    Returns the model's expected return of the given stock
+    '''
+    average_returns = ups_and_downs()
+    predictions = model.predict(X_pred)
+    gain = predictions[0][0]
+    loss = predictions[0][2]
+
+    return gain*average_returns[ticker]['up'] + loss*average_returns[ticker]['down']
