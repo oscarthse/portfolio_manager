@@ -1,18 +1,18 @@
-# Dockerfile
-FROM python:3.9-slim
+# Ensure this version is compatible with your requirements.txt
+FROM python:3.10
 
 # Set working directory
 WORKDIR /app
 
-# Copy dependencies and install
-COPY requirements.txt requirements.txt
+# Copy requirements file
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copy application code
+# Copy the rest of your application
 COPY . .
 
-# Expose port
-EXPOSE 8080
-
-# Command to run the application
+# Specify the command to run on container start
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
