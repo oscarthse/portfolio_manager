@@ -138,13 +138,12 @@ def ups_and_downs():
     return returns
 
 
-def expected_return(model, X_pred, ticker: str):
+def expected_return(model, X_pred, up, down):
     '''
     Returns the model's expected return of the given stock
     '''
-    average_returns = ups_and_downs()
     predictions = model.predict(X_pred)
     gain = predictions[0][0]
     loss = predictions[0][2]
 
-    return gain*average_returns[ticker]['up'] + loss*average_returns[ticker]['down']
+    return gain*up + loss*down
