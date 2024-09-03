@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-from getting import get_price_data_raw
-from supporting_functions import rename_columns
+from logic.getting import get_price_data_raw
+from logic.supporting_functions import rename_columns
 
 def var(simulations, confidence_interval: int):
     '''

@@ -29,7 +29,7 @@ def merged_times(stocks: list):
         stock_macro = get_macro_data()
         X, y, log_df = create_x_y(stock_raw, stock_tech, stock_macro)
         rename_columns(stock_raw)
-        stock = stock.sort_values(by='datetime')
+        stock_raw = stock_raw.sort_values(by='datetime')
         stocks_df[i] = stock_raw
         X_df[i] = X
         y_df[i] = y
@@ -41,8 +41,8 @@ def merged_times(stocks: list):
 
 
 
-    X_fit = [X_df[i] for i in range(10)]
-    for i in range(10):
+    X_fit = [X_df[i] for i in range(len(stocks))]
+    for i in range(len(stocks)):
         stocks_df[i] = stocks_df[i].sort_values(by = 'datetime')
         stocks_df[i] = stocks_df[i].reset_index()
         stocks_df[i] = stocks_df[i].drop(columns='index')
@@ -78,7 +78,7 @@ def optimize(X_fit, time_index, stocks, covariance_matrix):
         X_pred = X_fit[i][time_index:time_index + 1]
         scale = initialize_scaler(X_fit[i])
         X_pred = transform_scaler(scale, X_pred)
-        X_fit[i] = expected_return(models[i], X_pred, returns[stocks[i]]['up'], returns[stocks[i]]['down'])
+        X_fit[i] = expected_return(models[i], X_pred, stocks[i])
 
     ef = EfficientFrontier(X_fit, covariance_matrix)
     ef.max_sharpe()
