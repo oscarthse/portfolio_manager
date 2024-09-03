@@ -7,6 +7,7 @@ from logic.scaler import *
 from logic.stats import expected_return, ups_and_downs
 from pypfopt.risk_models import risk_matrix, fix_nonpositive_semidefinite, cov_to_corr, CovarianceShrinkage
 from pypfopt.efficient_frontier import EfficientFrontier
+from tensorflow.keras.models import load_model
 
 def merged_times(stocks: list):
     '''
@@ -72,7 +73,7 @@ def get_many_models(stocks):
 
     models = [0 for i in range(len(stocks))]
     for i in range(len(stocks)):
-        models[i] = get_neural_nets(stocks[i])
+        models[i] = load_model(f"models_all_features/model_{stocks[i]}_all_features.keras")
     return models
 
 def optimize(X_fit, time_index, stocks, covariance_matrix, models, returns):
