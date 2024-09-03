@@ -9,9 +9,3 @@ scaling.py
 .ipynb_checkpoints/
 .python-version
 __pycache__/
-*.json
-stocks_df
-y_fit
-X_fit
-increments.json
-models_all_features/

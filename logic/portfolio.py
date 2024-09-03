@@ -7,6 +7,7 @@ from logic.scaler import *
 from logic.stats import expected_return, ups_and_downs
 from pypfopt.risk_models import risk_matrix, fix_nonpositive_semidefinite, cov_to_corr, CovarianceShrinkage
 from pypfopt.efficient_frontier import EfficientFrontier
+from tensorflow.keras.models import load_model
 
 def merged_times(stocks: list):
     '''
@@ -64,23 +65,26 @@ def covariance_matrix(stocks_df, stocks):
         df = df.rename(columns = {'close_x': stocks[i-1]})
         df = df.rename(columns = {'close_y': stocks[i]})
     df = df.set_index('datetime')
-    cov = risk_matrix(df)
     shr = CovarianceShrinkage(df, frequency = 252*20)
     shr = shr.ledoit_wolf()
     return shr
 
-def optimize(X_fit, time_index, stocks, covariance_matrix):
-    returns = ups_and_downs()
+def get_many_models(stocks):
+
     models = [0 for i in range(len(stocks))]
     for i in range(len(stocks)):
-        models[i] = get_neural_nets(stocks[i])
+        models[i] = load_model(f"models_all_features/model_{stocks[i]}_all_features.keras")
+    return models
 
+def optimize(X_fit, time_index, stocks, covariance_matrix, models, returns):
+    X_opt = X_fit.copy()
+    for i in range(len(stocks)):
         X_pred = X_fit[i][time_index:time_index + 1]
         scale = initialize_scaler(X_fit[i])
         X_pred = transform_scaler(scale, X_pred)
-        X_fit[i] = expected_return(models[i], X_pred, stocks[i])
+        X_opt[i] = expected_return(models[i], X_pred, returns[stocks[i]]['up'], returns[stocks[i]]['down'])
 
-    ef = EfficientFrontier(X_fit, covariance_matrix)
+    ef = EfficientFrontier(X_opt, covariance_matrix)
     ef.max_sharpe()
     cleaned_weights = ef.clean_weights()
 
