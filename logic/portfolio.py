@@ -64,11 +64,9 @@ def covariance_matrix(stocks_df, stocks):
         df = df.rename(columns = {'close_x': stocks[i-1]})
         df = df.rename(columns = {'close_y': stocks[i]})
     df = df.set_index('datetime')
-    t_bills = [1.00001 ** i for i in range(df.shape[0])]
-    df['T-Bills'] = t_bills
     shr = CovarianceShrinkage(df, frequency = 252*20)
     shr = shr.ledoit_wolf()
-    return shr, df
+    return shr
 
 def get_many_models(stocks):
 
@@ -79,7 +77,6 @@ def get_many_models(stocks):
 
 def optimize(X_fit, time_index, stocks, covariance_matrix, models, returns):
     X_opt = X_fit.copy()
-    X_opt.append(0.001)
     for i in range(len(stocks)):
         X_pred = X_fit[i][time_index:time_index + 1]
         scale = initialize_scaler(X_fit[i])
