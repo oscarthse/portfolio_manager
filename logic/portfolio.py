@@ -9,23 +9,15 @@ from pypfopt.risk_models import risk_matrix, fix_nonpositive_semidefinite, cov_t
 from pypfopt.efficient_frontier import EfficientFrontier
 from tensorflow.keras.models import load_model
 
+
+
 def merged_times(stocks: list):
-    '''
-    Inner merges the time on the given stocks
-
-    Args:
-        stocks (list): List of strings containing the exact names of the stocks (e.g 'AAPL').
-
-    Returns:
-        list of pd.DataFrame: two lists of dataframes containing the features
-        and targets of each stock aligned on timestamp
-    '''
     stocks_df = [0 for i in range(len(stocks))]
     X_df= [0 for i in range(len(stocks))]
     y_df = [0 for i in range(len(stocks))]
 
-    for i in range(len(stocks)):
-        stock_raw = get_price_data_raw(stocks[i])
+    for i in range(len(stocks)): #stocks[i]
+        stock_raw, = get_price_data_raw(stocks[i])
         stock_tech = get_technical_analysis(stocks[i])
         stock_macro = get_macro_data()
         X, y, log_df = create_x_y(stock_raw, stock_tech, stock_macro)
@@ -39,7 +31,6 @@ def merged_times(stocks: list):
 
     for stock in stocks_df[1:]:
         df = df.merge(stock.filter(['datetime']), on= 'datetime', how= 'inner')
-
 
 
     X_fit = [X_df[i] for i in range(len(stocks))]
@@ -58,6 +49,7 @@ def merged_times(stocks: list):
     return X_fit, y_df, stocks_df
 
 
+
 def covariance_matrix(stocks_df, stocks):
     df = stocks_df[0].filter(['datetime', 'close'])
     for i in range(1, len(stocks)):
@@ -69,12 +61,14 @@ def covariance_matrix(stocks_df, stocks):
     shr = shr.ledoit_wolf()
     return shr
 
+
 def get_many_models(stocks):
 
     models = [0 for i in range(len(stocks))]
     for i in range(len(stocks)):
         models[i] = load_model(f"models_all_features/model_{stocks[i]}_all_features.keras")
     return models
+
 
 def optimize(X_fit, time_index, stocks, covariance_matrix, models, returns):
     X_opt = X_fit.copy()
@@ -89,3 +83,19 @@ def optimize(X_fit, time_index, stocks, covariance_matrix, models, returns):
     cleaned_weights = ef.clean_weights()
 
     return cleaned_weights, ef.portfolio_performance(verbose = True)
+
+
+def run_simulations(n_simulations, X_fit, time_index, stocks, covariance_matrix, models, returns):
+    returns_plot = []
+    vol = []
+    sharpe = []
+    weights_plot = []
+    for k in range(n_simulations):
+        n = time_index + k
+        weights, performance = optimize(X_fit, n, stocks, covariance_matrix, models, returns)
+        returns_plot.append(performance[0])
+        vol.append(performance[1])
+        sharpe.append(performance[2])
+        weights_plot.append(weights)
+ 
+    return returns_plot, vol, sharpe, weights_plot

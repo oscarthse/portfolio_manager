@@ -95,3 +95,22 @@ def get_macro_data_test():
     df = df.sort_values(by='timestamp')
 
     return df
+
+def get_final_price_data(ticker):
+    df_price_1 = get_price_data_raw(ticker)
+    df_price_2 = get_price_data_test_raw(ticker)
+    df_price_final = df_price_1.append(df_price_2)
+    return df_price_final
+
+def get_tech_final(ticker):
+    df_tech_1 = get_technical_analysis(ticker)
+    df_tech_2 = get_technical_analysis_test(ticker)
+    df_tech_final = df_tech_1.append(df_tech_2)
+    return df_tech_final
+
+def get_macro_final():
+    df_macro = get_macro_data()
+    df_macro_2 = get_macro_data_test()
+    df_macro_final = df_macro.append(df_macro_2)
+    return df_macro_final
+
