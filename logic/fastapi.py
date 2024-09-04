@@ -20,7 +20,7 @@ def read_item(stocks):
         stocks_df.append((pd.read_csv(f'stocks_df/stocks_df_{stocks[i]}.csv')).drop(columns = "Unnamed: 0"))
         X_fit.append((pd.read_csv(f'X_fit/X_fit_{stocks[i]}.csv')).drop(columns = "Unnamed: 0"))
         y_df.append((pd.read_csv(f'y_fit/y_df_{stocks[i]}.csv')).drop(columns = "Unnamed: 0"))
-    models = get_many_models(stocks)
+    models = load_model(f"models_all_features/model_{stocks[i]}_all_features.keras")
     with open('increments.json', 'r') as f:
         returns = json.load(f)
     cov_matrix = covariance_matrix(stocks_df, stocks)
