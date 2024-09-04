@@ -29,3 +29,4 @@ def read_item(stocks, n_simulations):
     returns_plot, vol, sharpe, weights_plot = run_simulations(n_simulations=n_simulations, X_fit = X_fit, time_index=40000, stocks=stocks, covariance_matrix=cov_matrix,models=models, returns=returns)
 
     return returns_plot, vol, sharpe, weights_plot
+#
