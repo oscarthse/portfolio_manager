@@ -9,8 +9,9 @@ def read_root():
     return {"read message": "PortfolioOptimazationAPI"}
 
 @app.get("/portfolio")
-def read_item(stocks):
+def read_item(stocks, n_simulations):
 
+    n_simulations=int(n_simulations)
     stocks = eval(stocks) #Note: Input should be a list of string with single quotatio f.e. ['AAPL', 'MSFT'....]
     stocks_df = []
     X_fit = []
@@ -25,8 +26,6 @@ def read_item(stocks):
         returns = json.load(f)
     cov_matrix = covariance_matrix(stocks_df, stocks)
 
-    cleaned_weights, performance = optimize(X_fit, time_index=40000, stocks=stocks, covariance_matrix=cov_matrix, models=models, returns=returns)
+    returns_plot, vol, sharpe, weights_plot = run_simulations(n_simulations=n_simulations, X_fit = X_fit, time_index=40000, stocks=stocks, covariance_matrix=cov_matrix,models=models, returns=returns)
 
-    response = {"weights": cleaned_weights,"performance": {"expected_return": performance[0], "volatility": performance[1],"sharpe_ratio": performance[2]}}
-
-    return response
+    return returns_plot, vol, sharpe, weights_plot
