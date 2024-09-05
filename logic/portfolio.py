@@ -17,7 +17,7 @@ def merged_times(stocks: list):
     y_df = [0 for i in range(len(stocks))]
 
     for i in range(len(stocks)): #stocks[i]
-        stock_raw, = get_price_data_raw(stocks[i])
+        stock_raw = get_price_data_raw(stocks[i])
         stock_tech = get_technical_analysis(stocks[i])
         stock_macro = get_macro_data()
         X, y, log_df = create_x_y(stock_raw, stock_tech, stock_macro)
@@ -97,5 +97,5 @@ def run_simulations(n_simulations, X_fit, time_index, stocks, covariance_matrix,
         vol.append(performance[1])
         sharpe.append(performance[2])
         weights_plot.append(weights)
- 
+
     return returns_plot, vol, sharpe, weights_plot
